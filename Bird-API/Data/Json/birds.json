@@ -1,0 +1,72 @@
+[
+  {
+    "BirdID": "6f3f570d-64f4-4f67-8c19-66bfabb568a1",
+    "Name": "Sparrow",
+    "ImageUrl": "sparrow.jpg",
+    "Description": "A small, common bird found in urban and rural areas.",
+    "Habitat": "Grasslands"
+  },
+  {
+    "BirdID": "d3625ef6-7e6b-4f17-8ad0-3fbba9db7169",
+    "Name": "Eagle",
+    "ImageUrl": "eagle.jpg",
+    "Description": "A large bird of prey known for its powerful flight and keen eyesight.",
+    "Habitat": "Mountains"
+  },
+  {
+    "BirdID": "5a926ce7-7fc3-4725-8b21-8e0d11ef546c",
+    "Name": "Penguin",
+    "ImageUrl": "penguin.jpg",
+    "Description": "A flightless bird known for its tuxedo-like appearance.",
+    "Habitat": "Wetlands"
+  },
+  {
+    "BirdID": "0bfc14e3-1247-45cc-b3d1-274973c3cf51",
+    "Name": "Owl",
+    "ImageUrl": "owl.jpg",
+    "Description": "A nocturnal bird of prey with excellent night vision.",
+    "Habitat": "Forest"
+  },
+  {
+    "BirdID": "1f7a5b6f-bbf5-44b4-8df5-225a5837bb99",
+    "Name": "Hawk",
+    "ImageUrl": "hawk.jpg",
+    "Description": "A bird of prey with sharp talons and a powerful beak.",
+    "Habitat": "Mountains"
+  },
+  {
+    "BirdID": "26f9c4e8-9859-4a2d-8efc-c6c0a0a32e2d",
+    "Name": "Kingfisher",
+    "ImageUrl": "kingfisher.jpg",
+    "Description": "A colorful bird known for its remarkable fishing skills.",
+    "Habitat": "Wetlands"
+  },
+  {
+    "BirdID": "4d91b35b-8d7f-4cc5-8416-61a5b99ff8ff",
+    "Name": "Robin",
+    "ImageUrl": "robin.jpg",
+    "Description": "A small, cheerful bird often associated with the arrival of spring.",
+    "Habitat": "Grasslands"
+  },
+  {
+    "BirdID": "9aa7caed-d06e-4e9e-801b-4333f0efbde7",
+    "Name": "Parrot",
+    "ImageUrl": "parrot.jpg",
+    "Description": "A vibrant and intelligent bird often kept as a pet.",
+    "Habitat": "Forest"
+  },
+  {
+    "BirdID": "8533a2c3-11eb-4b74-8c61-5a9977179f67",
+    "Name": "Swan",
+    "ImageUrl": "swan.jpg",
+    "Description": "A graceful bird known for its elegance and long neck.",
+    "Habitat": "Wetlands"
+  },
+  {
+    "BirdID": "7a158e7c-efdf-4e78-8f7b-c5db5f442f92",
+    "Name": "Woodpecker",
+    "ImageUrl": "woodpecker.jpg",
+    "Description": "A bird with a distinctive hammering sound while feeding.",
+    "Habitat": "Forest"
+  }
+]
