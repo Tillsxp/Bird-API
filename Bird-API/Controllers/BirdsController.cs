@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Bird_API.Data;
 using Bird_API.Models;
+using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 
 namespace Bird_API.Controllers
 {
@@ -19,46 +20,83 @@ namespace Bird_API.Controllers
         [HttpGet]
         public async Task<IActionResult> ListAll()
         {
-            var result = await _context.Birds.ToListAsync();
-            return Ok(result);
+            try
+            {
+                var result = await _context.Birds.ToListAsync();
+                return Ok(result);
+
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, $"{ex.Message} - {ex.InnerException}");
+            }
+
+            
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             var result = await _context.Birds.FindAsync(id);
+
+            if(result == null)
+            {
+                return NotFound($"Could not find bird with id: {id}");
+            }
             return Ok(result);
         }
         [HttpGet("breed/{name}")]
         public async Task<IActionResult> GetByName(string name)
         {
             var result = await _context.Birds.FindAsync(name);
+            if(result == null)
+            {
+                return NotFound($"Could not find bird with name {name}");
+            }
             return Ok(result);
         }
         [HttpPost()]
         public async Task<IActionResult> AddBird(Bird bird)
         {
-            var result = await _context.Birds.AddAsync(bird);
-            await _context.SaveChangesAsync();
-            return Ok(result);
+            try
+            {
+                var result = await _context.Birds.AddAsync(bird);
+                await _context.SaveChangesAsync();
+                return Ok(result);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"{ex.Message} - {ex.InnerException}");
+                throw;
+            }
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBird(int id,Bird bird)
         {
             var result = await _context.Birds.FindAsync(id);
-            result.Name = bird.Name;
-            result.Description = bird.Description;
-            result.Habitat = bird.Habitat;
-            result.ImageUrl = bird.ImageUrl;
-            _context.Birds.Update(result);
-            await _context.SaveChangesAsync();
-            return NoContent();
+            if(result != null)
+            {
+                result.Name = bird.Name;
+                result.Description = bird.Description;
+                result.Habitat = bird.Habitat;
+                result.ImageUrl = bird.ImageUrl;
+                _context.Birds.Update(result);
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            return NotFound($"Could not find bird with id {id}");
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBird(int id, Bird bird)
         {
             var result = await _context.Birds.FindAsync(id);
-            _context.Birds.Remove(result);
-            return NoContent();
+            if(result != null)
+            {
+                _context.Birds.Remove(result);
+                return NoContent();
+            }
+            return NotFound($"Could not find bird with id {id}");
         }
 
 
