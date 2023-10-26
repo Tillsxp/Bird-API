@@ -8,7 +8,7 @@ public interface IBirdRepo
     Task<Bird> FindByIdAsync(int id);
     Task<Bird> FindByNameAsync(string name);
 
-    Task<bool> AddAsync(Bird bird);
+    Task<Bird> AddAsync(Bird bird);
     Task<bool> UpdateAsync(Bird bird);
     Task<bool> DeleteAsync(int id);
     Task<bool> SaveAsync();

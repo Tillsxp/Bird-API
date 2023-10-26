@@ -14,11 +14,11 @@ public class BirdRepo : IBirdRepo
         _context = context;
     }
 
-    public async Task<bool> AddAsync(Bird bird)
+    public async Task<Bird> AddAsync(Bird bird)
     {
         _context.Add(bird);
         await _context.SaveChangesAsync();
-        return true;
+        return bird;
     }
 
     public async Task<bool> DeleteAsync(int id)

@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Bird_API.Models;
-using Microsoft.DotNet.Scaffolding.Shared.Messaging;
-
+using Bird_API.Viewmodels;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Bird_API.Interfaces;
-
 
 namespace Bird_API.Controllers
 {
@@ -13,7 +14,7 @@ namespace Bird_API.Controllers
     {
         private readonly IBirdRepo _repo;
 
-        public BirdsController( IBirdRepo repo)
+        public BirdsController(IBirdRepo repo)
         {
             _repo = repo;
         }
@@ -21,105 +22,132 @@ namespace Bird_API.Controllers
         [HttpGet]
         public async Task<IActionResult> ListAll()
         {
-
             try
             {
-                
+                var birds = await _repo.ListAllAsync();
+                var birdViewModels = birds.Select(b => new BirdViewModel
+                {
+                    BirdID = b.BirdID,
+                    Name = b.Name,
+                    ImageUrl = b.ImageUrl,
+                    Description = b.Description,
+                    Habitat = b.Habitat
+                }).ToList();
 
-            var result = await _repo.ListAllAsync();
-            return Ok(result);
-
-
+                return Ok(birdViewModels);
             }
             catch (Exception ex)
             {
-
                 return StatusCode(500, $"{ex.Message} - {ex.InnerException}");
             }
-
-            
-
         }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
+            var bird = await _repo.FindByIdAsync(id);
 
-            var result = await _repo.FindByIdAsync(id);
-
-
-            if(result == null)
+            if (bird == null)
             {
                 return NotFound($"Could not find bird with id: {id}");
             }
 
+            var birdViewModel = new BirdViewModel
+            {
+                BirdID = bird.BirdID,
+                Name = bird.Name,
+                ImageUrl = bird.ImageUrl,
+                Description = bird.Description,
+                Habitat = bird.Habitat
+            };
 
-            return Ok(result);
+            return Ok(birdViewModel);
         }
+
         [HttpGet("breed/{name}")]
         public async Task<IActionResult> GetByName(string name)
         {
+            var bird = await _repo.FindByNameAsync(name);
 
-            var result = await _repo.FindByNameAsync(name);
-
-            if(result == null)
+            if (bird == null)
             {
                 return NotFound($"Could not find bird with name {name}");
             }
 
+            var birdViewModel = new BirdViewModel
+            {
+                BirdID = bird.BirdID,
+                Name = bird.Name,
+                ImageUrl = bird.ImageUrl,
+                Description = bird.Description,
+                Habitat = bird.Habitat
+            };
 
-            return Ok(result);
+            return Ok(birdViewModel);
         }
-        [HttpPost()]
-        public async Task<IActionResult> AddBird(Bird bird)
-        {
 
+        [HttpPost]
+        public async Task<IActionResult> AddBird(BirdViewModel birdViewModel)
+        {
             try
             {
+                var bird = new Bird
+                {
+                    Name = birdViewModel.Name,
+                    ImageUrl = birdViewModel.ImageUrl,
+                    Description = birdViewModel.Description,
+                    Habitat = birdViewModel.Habitat
+                };
 
-            var result = await _repo.AddAsync(bird);
-            return Ok(result);
+                var result = await _repo.AddAsync(bird);
+                var addedBirdViewModel = new BirdViewModel
+                {
+                    BirdID = result.BirdID,
+                    Name = result.Name,
+                    ImageUrl = result.ImageUrl,
+                    Description = result.Description,
+                    Habitat = result.Habitat
+                };
 
+                return Ok(addedBirdViewModel);
             }
             catch (Exception ex)
             {
                 return BadRequest($"{ex.Message} - {ex.InnerException}");
-                throw;
             }
-
         }
+
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateBird(int id,Bird bird)
+        public async Task<IActionResult> UpdateBird(int id, BirdViewModel birdViewModel)
         {
-            var result = await _repo.FindByIdAsync(id);
+            var bird = await _repo.FindByIdAsync(id);
 
-            if(result != null)
+            if (bird != null)
             {
-            result.Name = bird.Name;
-            result.Description = bird.Description;
-            result.Habitat = bird.Habitat;
-            result.ImageUrl = bird.ImageUrl;
-            await _repo.UpdateAsync(result);
-            return NoContent();
- 
-            }
-            return NotFound($"Could not find bird with id {id}");
+                bird.Name = birdViewModel.Name;
+                bird.Description = birdViewModel.Description;
+                bird.Habitat = birdViewModel.Habitat;
+                bird.ImageUrl = birdViewModel.ImageUrl;
 
+                await _repo.UpdateAsync(bird);
+
+                return NoContent();
+            }
+
+            return NotFound($"Could not find bird with id {id}");
         }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBird(int id)
         {
             var result = await _repo.DeleteAsync(id);
 
-            if(result != false)
+            if (result)
             {
-
                 return NoContent();
             }
+
             return NotFound($"Could not find bird with id {id}");
-
         }
-
-
-
     }
 }
