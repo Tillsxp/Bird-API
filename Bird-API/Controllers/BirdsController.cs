@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Bird_API.Data;
 using Bird_API.Models;
 using Microsoft.DotNet.Scaffolding.Shared.Messaging;
+
+using Bird_API.Interfaces;
+
 
 namespace Bird_API.Controllers
 {
@@ -10,16 +11,17 @@ namespace Bird_API.Controllers
     [ApiController]
     public class BirdsController : ControllerBase
     {
-        private readonly BirdContext _context;
+        private readonly IBirdRepo _repo;
 
-        public BirdsController(BirdContext context)
+        public BirdsController( IBirdRepo repo)
         {
-            _context = context;
+            _repo = repo;
         }
 
         [HttpGet]
         public async Task<IActionResult> ListAll()
         {
+
             try
             {
                 var result = await _context.Birds.ToListAsync();
@@ -33,31 +35,44 @@ namespace Bird_API.Controllers
             }
 
             
+
+            var result = await _repo.ListAllAsync();
+            return Ok(result);
+
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
+
             var result = await _context.Birds.FindAsync(id);
 
             if(result == null)
             {
                 return NotFound($"Could not find bird with id: {id}");
             }
+
+            var result = await _repo.FindByIdAsync(id);
+
             return Ok(result);
         }
         [HttpGet("breed/{name}")]
         public async Task<IActionResult> GetByName(string name)
         {
+
             var result = await _context.Birds.FindAsync(name);
             if(result == null)
             {
                 return NotFound($"Could not find bird with name {name}");
             }
+
+            var result = await _repo.FindByNameAsync(name);
+
             return Ok(result);
         }
         [HttpPost()]
         public async Task<IActionResult> AddBird(Bird bird)
         {
+
             try
             {
                 var result = await _context.Birds.AddAsync(bird);
@@ -70,6 +85,9 @@ namespace Bird_API.Controllers
                 return BadRequest($"{ex.Message} - {ex.InnerException}");
                 throw;
             }
+            var result = await _repo.AddAsync(bird);
+            return Ok(result);
+
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBird(int id,Bird bird)
@@ -86,10 +104,19 @@ namespace Bird_API.Controllers
                 return NoContent();
             }
             return NotFound($"Could not find bird with id {id}");
+
+            var result = await _repo.FindByIdAsync(id);
+            result.Name = bird.Name;
+            result.Description = bird.Description;
+            result.Habitat = bird.Habitat;
+            result.ImageUrl = bird.ImageUrl;
+            await _repo.UpdateAsync(result);
+            return NoContent();
         }
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBird(int id, Bird bird)
+        public async Task<IActionResult> DeleteBird(int id)
         {
+
             var result = await _context.Birds.FindAsync(id);
             if(result != null)
             {
@@ -97,6 +124,10 @@ namespace Bird_API.Controllers
                 return NoContent();
             }
             return NotFound($"Could not find bird with id {id}");
+
+            var result = await _repo.DeleteAsync(id);
+            return NoContent();
+
         }
 
 
